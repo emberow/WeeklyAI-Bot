@@ -48,8 +48,11 @@ export class Line {
         const results = events.map(async (event: any) => {
             try {
                 const message = event.message.text;
-                if (!message.mentionsBot) {
-                    return; // 沒 @ 就不說話
+                const mentionees = event.message.mention?.mentionees || [];
+                // 檢查被標記的名單內，有沒有包含機器人自己 (isSelf === true)
+                const isBotMentioned = mentionees.some((m: any) => m.isSelf === true);
+                if (!isBotMentioned) {
+                    return null;
                 }
                 const res = await LLM.ask(message);
                 event.message.text = res;
@@ -59,5 +62,5 @@ export class Line {
             }
         })
         return results;
-        }
+    }
 }
