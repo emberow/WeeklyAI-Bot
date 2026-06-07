@@ -48,6 +48,9 @@ export class Line {
         const results = events.map(async (event: any) => {
             try {
                 const message = event.message.text;
+                if (!message.mentionsBot) {
+                    return; // 沒 @ 就不說話
+                }
                 const res = await LLM.ask(message);
                 event.message.text = res;
                 await textEventHandler(event);
