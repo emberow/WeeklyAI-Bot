@@ -1,0 +1,7 @@
+/node_modules
+.env
+ngrok.exe
+/dist
+.DS_Store
+/cookies
+/pics
