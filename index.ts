@@ -14,17 +14,8 @@ const middlewareConfig: MiddlewareConfig = {
 
 const PORT = process.env.PORT || 3000;
 
-// Create a new Express application.
 const app: Application = express();
 
-
-
-// Register the LINE middleware.
-// As an alternative, you could also pass the middleware in the route handler, which is what is used here.
-// app.use(middleware(middlewareConfig));
-
-// Route handler to receive webhook events.
-// This route is used to receive connection tests.
 app.get(
   '/',
   async (_: Request, res: Response): Promise<Response> => {
@@ -35,7 +26,6 @@ app.get(
   }
 );
 
-// This route is used for the Webhook.
 app.post(
   '/webhook',
   middleware(middlewareConfig),
@@ -48,7 +38,6 @@ app.post(
   }
 );
 
-// This route is used for the Webhook.
 app.get(
   '/test',
   async (req: Request, res: Response): Promise<Response> => {
@@ -67,7 +56,6 @@ app.get(
 // schedule 發送訊息
 scheduleDailyMessage();
 
-// Create a server and listen to it.
 app.listen(PORT, () => {
   console.log(`Application is live and listening on port ${PORT}`);
 });

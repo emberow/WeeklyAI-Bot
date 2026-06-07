@@ -1,5 +1,6 @@
 import { ClientConfig, Client, WebhookEvent, MessageAPIResponseBase, TextMessage } from '@line/bot-sdk';
 import * as dotenv from 'dotenv';
+import { LLM } from './LLM';
 
 dotenv.config();
 
@@ -10,14 +11,11 @@ const clientConfig: ClientConfig = {
 
 const client = new Client(clientConfig);
 
-// Function handler to receive the text.
 const textEventHandler = async (event: WebhookEvent): Promise<MessageAPIResponseBase | undefined> => {
-  // Process all variables here.
   if (event.type !== 'message' || event.message.type !== 'text') {
     return;
   }
 
-  // Process all message related variables here.
   const { replyToken } = event;
   const { text } = event.message;
 
@@ -47,15 +45,14 @@ export class Line {
     static async replyMessage(req: any){
         const events: WebhookEvent[] = req.events || [];
     
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const results = events.map(async (event: any) => {
             try {
-            const responseText = '測試';
-            event.message.text = responseText;
-            await textEventHandler(event);
+                const message = event.message.text;
+                const res = await LLM.ask(message);
+                event.message.text = res;
+                await textEventHandler(event);
             } catch (err) {
                 console.error(err)
-                throw err;
             }
         })
         return results;
